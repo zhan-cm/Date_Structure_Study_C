@@ -1,42 +1,46 @@
 
-//花了好久才学会，woc
+//鑺变簡濂戒箙鎵嶅浼氾紝woc
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include<stdlib.h>
-#include<string.h>
-#include<stdio.h>
-void GetNext(char* p,int* next){
-    int j=-1;
-    next[0]=-1;// 初始值设为-1，方便处理
-    for(int i=1;p[i]!='\0';i++){
-        while(j>=0 && p[i]!=p[j+1]){
-            j=next[j];//回退
+void GetNext(const char* pattern, int* next) {
+    int j = 0;
+    next[0] = 0;  // 绗竴涓綅缃案杩滄槸0
+    for (int i = 1; pattern[i] != '\0'; i++) {
+        while (j > 0 && pattern[i] != pattern[j]) {
+            j = next[j - 1];  // 鍥為��
         }
-        if(p[i]==p[j+1]){
-            j++;//相同字符，往后移进行匹配
+        if (pattern[i] == pattern[j]) {
+            j++;
         }
-        next[i]=j;
+        next[i] = j;
     }
 }
-int KMP(char* text,char* pattern){
+
+int KMP(const char* text, const char* pattern) {
     int n = strlen(text);
     int m = strlen(pattern);
-    int next[m+1];
-    GetNext(pattern,next);
-    int j=0;
-    for(int i=0;i<n;i++){
-        while(j>0&&text[i]!=pattern[j])
-            j=next[j];
-        if(text[i]==pattern[j])
+    if (m == 0) return 0;  // 绌烘ā寮忎覆
+
+    int next[m];
+    GetNext(pattern, next);
+
+    int j = 0;
+    for (int i = 0; i < n; i++) {
+        while (j > 0 && text[i] != pattern[j]) {
+            j = next[j - 1];
+        }
+        if (text[i] == pattern[j]) {
             j++;
-        if(j==m){
-            return i-m+1;
+        }
+        if (j == m) {
+            return i - m + 1;  // 杩斿洖鍖归厤璧峰浣嶇疆
         }
     }
-    return -1;
+    return -1;  // 鏈尮閰嶅埌
 }
-
-
 
 //test
 int main() {
